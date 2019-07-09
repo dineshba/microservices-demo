@@ -1,25 +1,55 @@
-version: '3'
+version: '3.7'
 
 services:
   adservice:
     image: adservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:9555"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=9555
   emailservice:
     image: emailservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:8080"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=8080
       - ENABLE_PROFILER=0
   paymentservice:
     image: paymentservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=50051
   shippingservice:
     image: shippingservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=50051
   checkoutservice:
     image: checkoutservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:5050"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=5050
       - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
@@ -30,22 +60,52 @@ services:
       - CART_SERVICE_ADDR=cartservice:7070
   cartservice:
     image: cartservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:7070"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - REDIS_ADDR=redis-cart:6379
       - PORT=7070
       - LISTEN_ADDR=0.0.0.0
   redis-cart:
     image: redis:alpine #persistance is not yet enabled
+    healthcheck:
+      test: ["CMD", "redis-cli", "keys", "*"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
   currencyservice:
     image: currencyservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:7000"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=7000
   productcatalogservice:
     image: productcatalogservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:3550"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=3550
   frontend:
     image: frontend
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8080/_healthz"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     ports:
       - "8080:8080"
     environment:
@@ -59,6 +119,12 @@ services:
       - AD_SERVICE_ADDR=adservice:9555
   recommendationservice:
     image: recommendationservice
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:8080"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       - PORT=8080
       - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550

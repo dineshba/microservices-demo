@@ -1,0 +1,71 @@
+version: '3'
+
+services:
+  adservice:
+    image: adservice
+    environment:
+      - PORT=9555
+  emailservice:
+    image: emailservice
+    environment:
+      - PORT=8080
+      - ENABLE_PROFILER=0
+  paymentservice:
+    image: paymentservice
+    environment:
+      - PORT=50051
+  shippingservice:
+    image: shippingservice
+    environment:
+      - PORT=50051
+  checkoutservice:
+    image: checkoutservice
+    environment:
+      - PORT=5050
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - SHIPPING_SERVICE_ADDR=shippingservice:50051
+      - PAYMENT_SERVICE_ADDR=paymentservice:50051
+      - EMAIL_SERVICE_ADDR=emailservice:8080
+      - CURRENCY_SERVICE_ADDR=currencyservice:7000
+      - CART_SERVICE_ADDR=cartservice:7070
+  cartservice:
+    image: cartservice
+    environment:
+      - REDIS_ADDR=redis-cart:6379
+      - PORT=7070
+      - LISTEN_ADDR=0.0.0.0
+  redis-cart:
+    image: redis:alpine #persistance is not yet enabled
+  currencyservice:
+    image: currencyservice
+    environment:
+      - PORT=7000
+  productcatalogservice:
+    image: productcatalogservice
+    environment:
+      - PORT=3550
+  frontend:
+    image: frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - CURRENCY_SERVICE_ADDR=currencyservice:7000
+      - CART_SERVICE_ADDR=cartservice:7070
+      - RECOMMENDATION_SERVICE_ADDR=recommendationservice:8080
+      - SHIPPING_SERVICE_ADDR=shippingservice:50051
+      - CHECKOUT_SERVICE_ADDR=checkoutservice:5050
+      - AD_SERVICE_ADDR=adservice:9555
+  recommendationservice:
+    image: recommendationservice
+    environment:
+      - PORT=8080
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - ENABLE_PROFILER=0
+  loadgenerator:
+    image: loadgenerator
+    environment:
+    - FRONTEND_ADDR=frontend:80
+    - USERS=20
+

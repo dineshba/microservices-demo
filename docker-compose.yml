@@ -3,6 +3,11 @@ version: '3.7'
 services:
   adservice:
     image: adservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:9555"]
       interval: 10s
@@ -13,6 +18,11 @@ services:
       - PORT=9555
   emailservice:
     image: emailservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:8080"]
       interval: 10s
@@ -24,6 +34,11 @@ services:
       - ENABLE_PROFILER=0
   paymentservice:
     image: paymentservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
       interval: 10s
@@ -34,6 +49,11 @@ services:
       - PORT=50051
   shippingservice:
     image: shippingservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
       interval: 10s
@@ -44,6 +64,11 @@ services:
       - PORT=50051
   checkoutservice:
     image: checkoutservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:5050"]
       interval: 10s
@@ -60,6 +85,11 @@ services:
       - CART_SERVICE_ADDR=cartservice:7070
   cartservice:
     image: cartservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:7070"]
       interval: 10s
@@ -72,6 +102,11 @@ services:
       - LISTEN_ADDR=0.0.0.0
   redis-cart:
     image: redis:alpine #persistance is not yet enabled
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "redis-cli", "keys", "*"]
       interval: 10s
@@ -80,6 +115,11 @@ services:
       start_period: 30s
   currencyservice:
     image: currencyservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:7000"]
       interval: 10s
@@ -90,6 +130,11 @@ services:
       - PORT=7000
   productcatalogservice:
     image: productcatalogservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:3550"]
       interval: 10s
@@ -100,6 +145,11 @@ services:
       - PORT=3550
   frontend:
     image: frontend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8080/_healthz"]
       interval: 10s
@@ -119,6 +169,11 @@ services:
       - AD_SERVICE_ADDR=adservice:9555
   recommendationservice:
     image: recommendationservice
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:8080"]
       interval: 10s
